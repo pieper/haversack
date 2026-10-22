@@ -253,6 +253,9 @@ On the command line, `--folds all` (or `0,1,2`) picks the folds to ensemble; wit
 runs the ensemble its catalog states (`lnq:*`), else fold 0. A server job names its folds.
 `--json-progress` writes a run's progress, result and any error as `haversack> {json}` lines on
 stderr, for a program driving the run.
+A region-based model (sigmoid heads, a `labels` entry listing several values) runs too: each
+region is painted at its `regions_class_order` value, later regions winning, as nnU-Net's own
+export does. It writes labels only; a ranked store needs a softmax head.
 Errors are one family, `haversack.HaversackError` (`InputError`, `ModelNotFound`,
 `UnsupportedModel`, `ResourceError`, `Cancelled`).
 
@@ -618,8 +621,9 @@ haversack remote embeddings --identity idc:<uuid>    # what it has cached, with 
 
 ## What haversack does not do yet
 
-- Multi-channel nnU-Net inputs, region (sigmoid) heads, and the `3d_lowres`, cascade and `2d`
-  configurations are not on the nnU-Net path.
+- Multi-channel nnU-Net inputs and the `3d_lowres`, cascade and `2d` configurations are not on
+  the nnU-Net path. Region (sigmoid) heads write labels but not ranked stores, and where regions
+  nest, a painted value is still named after its whole region (see the CHANGELOG).
 - VoxTell and the MONAI bundles are experimental, opt-in, and Modal-only (above).
   FastSurfer and SynthStrip run locally (above).
 - Versioning: `haversack.__version__` is haversack's own number and is what the server reports; the
